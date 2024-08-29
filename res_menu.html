@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobile App Menu</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+        }
+
+        .app {
+            display: flex;
+            height: 100vh;
+        }
+
+        .menu-list {
+            width: 70%;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6347;
+        }
+
+        .menu-search input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .menu-categories {
+            margin-top: 20px;
+        }
+
+        .menu-categories button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
+        }
+
+        .menu-categories button:hover,
+        .menu-categories .active {
+            background-color: #ff6347;
+            color: white;
+            font-weight: bold;
+        }
+
+        .food-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .food-item {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .food-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .food-item img {
+            width: 100%;
+            border-radius: 10px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .food-detail {
+            width: 30%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: none;
+            position: relative;
+        }
+
+        .food-image img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .food-info {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .food-details span {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quantity-selector button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+            cursor: pointer;
+            font-size: 16px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .quantity-selector input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+
+        .add-to-cart,
+        .remove-from-cart {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        .add-to-cart {
+            background-color: #ff6347;
+        }
+
+        .add-to-cart:hover {
+            background-color: #e5533b;
+        }
+
+        .remove-from-cart {
+            background-color: #dc3545;
+        }
+
+        .remove-from-cart:hover {
+            background-color: #c82333;
+        }
+
+        .pay-now {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        .pay-now:hover {
+            background-color: #218838;
+        }
+
+        .payment-options {
+            display: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+        }
+
+        .payment-options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .pay-online {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .pay-online:hover {
+            background-color: #0056b3;
+        }
+
+        .cash-on-delivery {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .cash-on-delivery:hover {
+            background-color: #5a6268;
+        }
+
+        .cart-notification {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+    <script>
+        const foodData = [
+            {
+                name: "Pear & Orange",
+                image: "Pear-Orange.jpg",
+                time: "20 min",
+                rating: 4,
+                price: 25.00,
+                description: "A delicious combination of pear and orange.",
+                category: "Dessert"
+            },
+            {
+                name: "Avocado Toast",
+                image: "avocado_toast.jpg",
+                time: "10 min",
+                rating: 5,
+                price: 15.00,
+                description: "Crispy toast topped with creamy avocado and seasoning.",
+                category: "Breakfast"
+            },
+            {
+                name: "Vegan Burger",
+                image: "Vegan-Burger.jpg",
+                time: "30 min",
+                rating: 4.5,
+                price: 18.00,
+                description: "A healthy vegan burger with fresh vegetables.",
+                category: "Lunch"
+            },
+            {
+                name: "Berry Smoothie",
+                image: "berry-smoothie.jpg",
+                time: "5 min",
+                rating: 4.8,
+                price: 8.00,
+                description: "A refreshing blend of mixed berries.",
+                category: "Drink"
+            },
+            {
+                name: "Chocolate Cake",
+                image: "Chocolate cake.jpg.webp",
+                time: "40 min",
+                rating: 5,
+                price: 30.00,
+                description: "Rich and moist chocolate cake topped with ganache.",
+                category: "Dessert"
+            },
+            {
+                name: "Caesar Salad",
+                image: "Caesar salad.jpg",
+                time: "15 min",
+                rating: 4.3,
+                price: 12.00,
+                description: "Crispy romaine lettuce with Caesar dressing.",
+                category: "Lunch"
+            },
+            {
+                name: "Lemonade",
+                image: "lemonade.jpg",
+                time: "2 min",
+                rating: 4.7,
+                price: 5.00,
+                description: "Freshly squeezed lemonade with a hint of mint.",
+                category: "Drink"
+            }
+        ];
+
+        let cart = [];
+
+        function populateFoodItems(category = "All", searchQuery = "") {
+            const foodItemsContainer = document.querySelector('.food-items');
+            foodItemsContainer.innerHTML = '';
+            const filteredFoodData = foodData.filter(food => {
+                const matchCategory = category === "All" || food.category === category;
+                const matchSearch = searchQuery === "" || food.name.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchCategory && matchSearch;
+            });
+            filteredFoodData.forEach(food => {
+                const foodItem = document.createElement('div');
+                foodItem.classList.add('food-item');
+                foodItem.innerHTML = `
+                    <img src="${food.image}" alt="${food.name}">
+                    <h3>${food.name}</h3>
+                    <p>${food.description}</p>
+                    <p>$${food.price.toFixed(2)}</p>
+                `;
+                foodItem.onclick = () => showFoodDetails(food);
+                foodItemsContainer.appendChild(foodItem);
+            });
+        }
+
+        function showFoodDetails(food) {
+            const foodDetail = document.querySelector('.food-detail');
+            const foodImage = document.querySelector('.food-image img');
+            const foodInfo = document.querySelector('.food-info');
+            foodImage.src = food.image;
+            foodInfo.innerHTML = `
+                <h3>${food.name}</h3>
+                <p>${food.description}</p>
+                <p>Preparation Time: ${food.time}</p>
+                <p>Rating: ${food.rating} / 5</p>
+                <p>Price: $${food.price.toFixed(2)}</p>
+            `;
+
+            document.getElementById('quantity').value = 1;
+
+            document.querySelector('.add-to-cart').onclick = () => addToCart(food);
+            document.querySelector('.remove-from-cart').onclick = () => removeFromCart(food);
+            foodDetail.style.display = 'block';
+        }
+
+        function addToCart(food) {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            for (let i = 0; i < quantity; i++) {
+                cart.push(food);
+            }
+            showCartNotification(`${quantity} x ${food.name} added to cart.`);
+        }
+
+        function removeFromCart(food) {
+            cart = cart.filter(cartItem => cartItem !== food);
+            showCartNotification(`${food.name} removed from cart.`);
+        }
+
+        function showCartNotification(message) {
+            const cartNotification = document.querySelector('.cart-notification');
+            cartNotification.textContent = message;
+            cartNotification.style.display = 'block';
+            setTimeout(() => {
+                cartNotification.style.display = 'none';
+            }, 3000);
+        }
+
+        function togglePaymentOptions() {
+            const paymentOptions = document.querySelector('.payment-options');
+            paymentOptions.style.display = paymentOptions.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onload = function () {
+            populateFoodItems();
+            const paymentOptions = document.querySelector('.payment-options');
+            document.addEventListener('click', (e) => {
+                if (!paymentOptions.contains(e.target) && e.target.className !== 'pay-now') {
+                    paymentOptions.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="app">
+    <div class="menu-list">
+        <div class="menu-header">
+            <div class="menu-title">Menu</div>
+            <div class="menu-search">
+                <input type="text" id="search-input" placeholder="Search...">
+            </div>
+        </div>
+        <div class="menu-categories">
+            <button onclick="populateFoodItems('All')" class="active">All</button>
+            <button onclick="populateFoodItems('Breakfast')">Breakfast</button>
+            <button onclick="populateFoodItems('Lunch')">Lunch</button>
+            <button onclick="populateFoodItems('Dessert')">Dessert</button>
+            <button onclick="populateFoodItems('Drink')">Drink</button>
+        </div>
+        <div class="food-items"></div>
+    </div>
+    <div class="food-detail">
+        <div class="food-image">
+            <img src="" alt="Food Image">
+        </div>
+        <div class="food-info"></div>
+        <div class="quantity-selector">
+            <button onclick="document.getElementById('quantity').stepDown()">-</button>
+            <input id="quantity" type="number" value="1" min="1">
+            <button onclick="document.getElementById('quantity').stepUp()">+</button>
+        </div>
+        <button class="add-to-cart">Add to Cart</button>
+        <button class="remove-from-cart">Remove from Cart</button>
+        <button class="pay-now" onclick="togglePaymentOptions()">Pay Now</button>
+        <div class="payment-options">
+            <button class="pay-online">Pay Online</button>
+            <button class="cash-on-delivery">Cash on Delivery</button>
+        </div>
+    </div>
+</div>
+<div class="cart-notification"></div>
+</body>
+</html>
